@@ -36,6 +36,7 @@ DEFAULT_CLIENT_OPTIONS = {
 
 HTTPStatusError = httpx.HTTPStatusError
 RequestError = httpx.RequestError
+ReadError = httpx.ReadError
 
 
 class HTTPServerSideError(httpx.HTTPStatusError):
@@ -151,7 +152,7 @@ def after_log(retry_state):
 connectivity_issue_retry = tenacity.retry(
     reraise=True,
     retry=tenacity.retry_if_exception_type(
-        (RequestError, HTTPServerSideError, HTTPTooManyRequests)
+        (RequestError, HTTPServerSideError, HTTPTooManyRequests, ReadError)
     ),
     wait=tenacity.wait_combine(
         wait_retry_after_header, tenacity.wait_exponential(multiplier=0.2)
